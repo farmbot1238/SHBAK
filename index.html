@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شباكي - منصة التواصل الاجتماعي</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4f46e5',
+                        secondary: '#7c3aed',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- خط Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { font-family: 'Cairo', sans-serif; }
+        .transition-theme {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        /* تنسيق قسم التعليقات */
+        .comments-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .comments-section.show {
+            max-height: 1000px;
+            transition: max-height 0.5s ease-in;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-theme">
+
+    <!-- ========== الصفحة الرئيسية (قبل تسجيل الدخول) ========== -->
+    <div id="landingPage" class="min-h-screen">
+        <!-- الهيدر مع زر الوضع الليلي/النهاري -->
+        <header class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex justify-between items-center">
+                    <!-- الشعار والعنوان -->
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="fa-solid fa-window-maximize text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-3xl font-bold bg-gradient-to-l from-primary to-secondary bg-clip-text text-transparent">
+                                شباكي
+                            </h1>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">نافذتك للعالم</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <!-- زر الوضع الليلي/النهاري -->
+                        <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition" id="themeToggle">
+                            <i class="fa-solid fa-moon text-gray-600 dark:text-gray-300 text-xl" id="themeIcon"></i>
+                        </button>
+
+                        <!-- أزرار تسجيل الدخول والتسجيل -->
+                        <div class="flex gap-3">
+                            <button onclick="showLoginModal()" class="px-6 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-lg hover:opacity-90 transition font-semibold shadow-md">
+                                <i class="fa-solid fa-right-to-bracket ml-2"></i>
+                                تسجيل دخول
+                            </button>
+                            <button onclick="showRegisterModal()" class="px-6 py-2 border-2 border-primary text-primary dark:text-white dark:border-white rounded-lg hover:bg-primary/10 transition font-semibold">
+                                <i class="fa-solid fa-user-plus ml-2"></i>
+                                إنشاء حساب
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- المحتوى الرئيسي للصفحة الرئيسية -->
+        <main class="container mx-auto px-4 py-16">
+            <div class="max-w-4xl mx-auto text-center">
+                <!-- عنوان رئيسي -->
+                <h2 class="text-5xl font-bold text-gray-800 dark:text-white mb-6">
+                    مرحباً بك في <span class="bg-gradient-to-l from-primary to-secondary bg-clip-text text-transparent">شباكي</span>
+                </h2>
+                
+                <!-- نبذة عن الموقع -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-12">
+                    <div class="flex justify-center mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center">
+                            <i class="fa-solid fa-window-maximize text-4xl text-primary dark:text-secondary"></i>
+                        </div>
+                    </div>
+                    <p class="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
+                        تخيل أن لكل شخص شباكه الخاص، نافذة صغيرة يطل منها على العالم، 
+                        يشارك أفكاره، صوره، ولحظاته الجميلة. هذا هو <span class="font-bold text-primary">شباكي</span>،
+                        مساحة آمنة للتواصل ومشاركة اللحظات مع الأصدقاء. كل شباك له حكايته، 
+                        وكل نافذة تروي قصة. انضم إلينا وافتح شباكك الخاص!
+                    </p>
+                </div>
+
+                <!-- مميزات الموقع -->
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition">
+                        <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-comments text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">تعليقات ونقاشات</h3>
+                        <p class="text-gray-600 dark:text-gray-400">شارك رأيك، علق، ورد على التعليقات بكل حرية</p>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition">
+                        <div class="w-14 h-14 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-images text-secondary text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">صور وفيديوهات</h3>
+                        <p class="text-gray-600 dark:text-gray-400">شارك لحظاتك مع الأصدقاء بصور ومقاطع فيديو</p>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition">
+                        <div class="w-14 h-14 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-shield-halved text-green-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">بيئة آمنة</h3>
+                        <p class="text-gray-600 dark:text-gray-400">نظام ذكي لتصفية الكلمات غير المناسبة وحماية الخصوصية</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ========== لوحة التحكم (بعد تسجيل الدخول) ========== -->
+    <div id="dashboard" class="hidden min-h-screen bg-gray-50 dark:bg-gray-900">
+        <!-- الشريط الجانبي -->
+        <div class="fixed right-0 top-0 w-72 h-full bg-white dark:bg-gray-800 shadow-lg z-40 transition-theme overflow-y-auto">
+            <div class="p-6">
+                <!-- الشعار -->
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-window-maximize text-white"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">شباكي</h2>
+                </div>
+
+                <!-- معلومات المستخدم -->
+                <div class="text-center mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                    <div class="w-20 h-20 mx-auto mb-3 relative group">
+                        <div class="w-full h-full rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-3xl font-bold" id="userAvatar">
+                            👤
+                        </div>
+                        <button onclick="triggerAvatarUpload()" class="absolute bottom-0 left-0 bg-primary text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition">
+                            <i class="fa-solid fa-camera text-sm"></i>
+                        </button>
+                    </div>
+                    <h3 class="font-bold text-gray-800 dark:text-white" id="userNameDisplay">أحمد محمد</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400" id="userEmailDisplay">ahmed@example.com</p>
+                </div>
+
+                <!-- القائمة الجانبية -->
+                <nav class="space-y-2">
+                    <a href="#" onclick="showHome()" class="flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary rounded-lg">
+                        <i class="fa-solid fa-house"></i>
+                        <span>الرئيسية</span>
+                    </a>
+
+                    <!-- زر الإعدادات (على شكل ترس) -->
+                    <div class="relative">
+                        <button onclick="toggleSettingsMenu()" class="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>الإعدادات</span>
+                            <i class="fa-solid fa-chevron-down mr-auto text-sm" id="settingsArrow"></i>
+                        </button>
+                        
+                        <!-- القائمة المنسدلة للإعدادات -->
+                        <div id="settingsMenu" class="hidden mt-2 mr-8 space-y-2">
+                            <button onclick="showProfile()" class="w-full flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg text-sm">
+                                <i class="fa-solid fa-user"></i>
+                                <span>الملف الشخصي</span>
+                            </button>
+                            <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-sm">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                <span>تسجيل الخروج</span>
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        <!-- المحتوى الرئيسي -->
+        <div class="mr-72">
+            <!-- الهيدر العلوي -->
+            <header class="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-30 transition-theme">
+                <div class="px-8 py-4 flex justify-between items-center">
+                    <h1 class="text-2xl font-bold text-gray-800 dark:text-white" id="pageTitle">
+                        الرئيسية
+                    </h1>
+                    
+                    <div class="flex items-center gap-4">
+                        <!-- رسالة الترحيب -->
+                        <div class="text-left">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">مرحباً بك</p>
+                            <p class="font-semibold text-gray-800 dark:text-white" id="welcomeUserName">أحمد</p>
+                        </div>
+                        
+                        <!-- زر الوضع الليلي في الداشبورد -->
+                        <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                            <i class="fa-solid fa-moon text-gray-600 dark:text-gray-300 text-xl" id="dashboardThemeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- محتوى الصفحات المختلفة -->
+            <main class="p-8" id="mainContent">
+                <!-- هنا رح تتحط المحتويات حسب الصفحة -->
+            </main>
+        </div>
+    </div>
+
+    <!-- ========== مودال تسجيل الدخول ========== -->
+    <div id="loginModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100]">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-8 m-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-white">تسجيل الدخول</h3>
+                <button onclick="hideLoginModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400">
+                    <i class="fa-solid fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2">البريد الإلكتروني</label>
+                    <input type="email" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary" required>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2">كلمة المرور</label>
+                    <input type="password" id="loginPassword" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary" required>
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-lg hover:opacity-90 transition font-semibold">
+                    دخول
+                </button>
+            </form>
+
+            <p class="text-center mt-4 text-gray-600 dark:text-gray-400">
+                ليس لديك حساب؟ 
+                <button onclick="switchToRegister()" class="text-primary hover:underline mr-1">
+                    أنشئ حساب جديد
+                </button>
+            </p>
+        </div>
+    </div>
+
+    <!-- ========== مودال إنشاء حساب ========== -->
+    <div id="registerModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100]">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-8 m-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-white">إنشاء حساب جديد</h3>
+                <button onclick="hideRegisterModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400">
+                    <i class="fa-solid fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleRegister(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2">الاسم</label>
+                    <input type="text" id="regName" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2">البريد الإلكتروني</label>
+                    <input type="email" id="regEmail" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2">كلمة المرور</label>
+                    <input type="password" id="regPassword" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary" required>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2">تأكيد كلمة المرور</label>
+                    <input type="password" id="regConfirmPassword" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary" required>
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-lg hover:opacity-90 transition font-semibold">
+                    إنشاء حساب
+                </button>
+            </form>
+
+            <p class="text-center mt-4 text-gray-600 dark:text-gray-400">
+                لديك حساب بالفعل؟ 
+                <button onclick="switchToLogin()" class="text-primary hover:underline mr-1">
+                    تسجيل دخول
+                </button>
+            </p>
+        </div>
+    </div>
+
+    <!-- ========== مودال تعديل الملف الشخصي ========== -->
+    <div id="profileModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100]">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-8 m-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-white">تعديل الملف الشخصي</h3>
+                <button onclick="hideProfileModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400">
+                    <i class="fa-solid fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleProfileUpdate(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2">الاسم</label>
+                    <input type="text" id="profileName" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2">البريد الإلكتروني</label>
+                    <input type="email" id="profileEmail" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2">كلمة المرور الجديدة (اختياري)</label>
+                    <input type="password" id="profileNewPassword" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-lg hover:opacity-90 transition font-semibold">
+                    حفظ التغييرات
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== JavaScript ========== -->
+    <script>
+        // ===== متغيرات عامة =====
+        let currentUser = null;
+        let isDarkMode = localStorage.getItem('theme') === 'dark';
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let posts = JSON.parse(localStorage.getItem('posts')) || [];
+        const ADMIN_EMAIL = 'admin@example.com';
+
+        // ===== دوال الوضع الليلي/النهاري =====
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            if (isDarkMode) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('themeIcon')?.classList.replace('fa-moon', 'fa-sun');
+                document.getElementById('dashboardThemeIcon')?.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('themeIcon')?.classList.replace('fa-sun', 'fa-moon');
+                document.getElementById('dashboardThemeIcon')?.classList.replace('fa-sun', 'fa-moon');
+            }
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        }
+
+        // تطبيق الوضع المحفوظ عند التحميل
+        if (isDarkMode) {
+            document.documentElement.classList.add('dark');
+        }
+
+        // ===== دوال إظهار وإخفاء المودالات =====
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('loginModal').classList.add('flex');
+        }
+
+        function hideLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('loginModal').classList.remove('flex');
+        }
+
+        function showRegisterModal() {
+            document.getElementById('registerModal').classList.remove('hidden');
+            document.getElementById('registerModal').classList.add('flex');
+        }
+
+        function hideRegisterModal() {
+            document.getElementById('registerModal').classList.add('hidden');
+            document.getElementById('registerModal').classList.remove('flex');
+        }
+
+        function showProfileModal() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (user) {
+                document.getElementById('profileName').value = user.name;
+                document.getElementById('profileEmail').value = user.email;
+                document.getElementById('profileNewPassword').value = '';
+            }
+            document.getElementById('profileModal').classList.remove('hidden');
+            document.getElementById('profileModal').classList.add('flex');
+        }
+
+        function hideProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+            document.getElementById('profileModal').classList.remove('flex');
+        }
+
+        function switchToRegister() {
+            hideLoginModal();
+            showRegisterModal();
+        }
+
+        function switchToLogin() {
+            hideRegisterModal();
+            showLoginModal();
+        }
+
+        // ===== دوال القائمة الجانبية =====
+        function toggleSettingsMenu() {
+            const menu = document.getElementById('settingsMenu');
+            const arrow = document.getElementById('settingsArrow');
+            menu.classList.toggle('hidden');
+            arrow.classList.toggle('rotate-180');
+        }
+
+        // ===== دوال عرض المحتوى =====
+        function showHome() {
+            document.getElementById('pageTitle').textContent = 'الرئيسية';
+            loadHomeContent();
+        }
+
+        function showProfile() {
+            document.getElementById('pageTitle').textContent = 'الملف الشخصي';
+            loadProfileContent();
+            toggleSettingsMenu(); // إغلاق القائمة بعد الضغط
+        }
+
+        // تحميل محتوى الرئيسية (المنشورات)
+        function loadHomeContent() {
+            let html = `
+                <!-- نموذج إنشاء منشور جديد -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-8">
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold" id="postAvatar">
+                            ${currentUser?.name?.[0] || '👤'}
+                        </div>
+                        <div class="flex-1">
+                            <textarea id="newPostContent" class="w-full p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary" placeholder="افتح شباكك وشارك معنا..." rows="3"></textarea>
+                            
+                            <div class="flex items-center gap-4 mt-4">
+                                <button onclick="triggerImageUpload()" class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary">
+                                    <i class="fa-solid fa-image text-xl"></i>
+                                    <span>صورة</span>
+                                </button>
+                                <button onclick="triggerVideoUpload()" class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary">
+                                    <i class="fa-solid fa-video text-xl"></i>
+                                    <span>فيديو</span>
+                                </button>
+                                <button onclick="createPost()" class="mr-auto bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-lg hover:opacity-90">
+                                    <i class="fa-regular fa-paper-plane ml-2"></i>
+                                    افتح شباكك
+                                </button>
+                            </div>
+
+                            <!-- معاينة الملف -->
+                            <div id="postMediaPreview" class="hidden mt-4 relative">
+                                <img id="previewImage" class="max-h-64 rounded-lg" src="" alt="Preview">
+                                <video id="previewVideo" class="max-h-64 rounded-lg" controls></video>
+                                <button onclick="clearPostMedia()" class="absolute top-2 left-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600">
+                                    <i class="fa-solid fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- قائمة المنشورات -->
+                <div id="postsContainer" class="space-y-6">
+            `;
+
+            // عرض المنشورات
+            if (posts.length === 0) {
+                html += `
+                    <div class="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
+                        <div class="text-gray-400 text-6xl mb-4">🪟</div>
+                        <p class="text-gray-500 dark:text-gray-400">لا توجد منشورات بعد</p>
+                        <p class="text-gray-400 text-sm mt-2">كن أول من يفتح شباكه!</p>
+                    </div>
+                `;
+            } else {
+                posts.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(post => {
+                    html += generatePostHTML(post);
+                });
+            }
+
+            html += `</div>`;
+            document.getElementById('mainContent').innerHTML = html;
+        }
+
+        // تحميل محتوى الملف الشخصي
+        function loadProfileContent() {
+            const userPosts = posts.filter(p => p.userEmail === currentUser?.email);
+            
+            let html = `
+                <!-- بطاقة الملف الشخصي -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden mb-8">
+                    <div class="h-48 bg-gradient-to-r from-primary to-secondary"></div>
+                    
+                    <div class="px-8 pb-8 relative">
+                        <div class="flex items-end gap-6 -mt-16">
+                            <div class="w-32 h-32 bg-white dark:bg-gray-800 rounded-full p-1 shadow-lg">
+                                <div class="w-full h-full bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white text-4xl font-bold">
+                                    ${currentUser?.name?.[0] || '👤'}
+                                </div>
+                            </div>
+                            <div class="flex-1 pb-2">
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">${currentUser?.name}</h2>
+                                <p class="text-gray-500 dark:text-gray-400">@${currentUser?.email?.split('@')[0]}</p>
+                            </div>
+                            <button onclick="showProfileModal()" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90">
+                                <i class="fa-solid fa-pen ml-2"></i>
+                                تعديل الملف
+                            </button>
+                        </div>
+
+                        <!-- إحصائيات -->
+                        <div class="flex gap-8 mt-6">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-gray-800 dark:text-white">${userPosts.length}</div>
+                                <div class="text-gray-500 dark:text-gray-400">منشور</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-gray-800 dark:text-white">${userPosts.reduce((acc, p) => acc + (p.likes || 0), 0)}</div>
+                                <div class="text-gray-500 dark:text-gray-400">إعجاب</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- شبكة منشورات المستخدم -->
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">منشوراتي</h3>
+                <div class="grid grid-cols-3 gap-4">
+            `;
+
+            if (userPosts.length === 0) {
+                html += `
+                    <div class="col-span-3 text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
+                        <p class="text-gray-500 dark:text-gray-400">لم تنشر أي شيء بعد</p>
+                    </div>
+                `;
+            } else {
+                userPosts.forEach(post => {
+                    html += `
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
+                            ${post.media ? 
+                                (post.mediaType === 'image' ? 
+                                    `<img src="${post.media}" alt="Post" class="w-full h-48 object-cover">` :
+                                    `<video src="${post.media}" class="w-full h-48 object-cover"></video>`
+                                ) : 
+                                `<div class="w-full h-48 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center p-4">
+                                    <p class="text-gray-600 dark:text-gray-300 text-center">${post.content.substring(0, 50)}...</p>
+                                </div>`
+                            }
+                        </div>
+                    `;
+                });
+            }
+
+            html += `</div>`;
+            document.getElementById('mainContent').innerHTML = html;
+        }
+
+        // توليد HTML للمنشور
+        function generatePostHTML(post) {
+            const canDelete = currentUser?.email === post.userEmail || currentUser?.email === ADMIN_EMAIL;
+            const timeAgo = getTimeAgo(post.date);
+            
+            return `
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6" data-post-id="${post.id}">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white font-bold">
+                                ${post.userName?.[0] || '👤'}
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white">${post.userName}</h4>
+                                    ${post.userEmail === currentUser?.email ? 
+                                        '<span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-2 py-1 rounded-full">شباكي</span>' : ''}
+                                </div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">${timeAgo}</p>
+                            </div>
+                        </div>
+                        
+                        ${canDelete ? `
+                            <button onclick="deletePost('${post.id}')" class="text-gray-400 hover:text-red-500 transition">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+
+                    <p class="text-gray-700 dark:text-gray-300 mb-4">${post.content}</p>
+
+                    ${post.media ? `
+                        ${post.mediaType === 'image' ? 
+                            `<img src="${post.media}" alt="Post media" class="rounded-lg mb-4 max-h-96 w-full object-contain bg-gray-100 dark:bg-gray-700">` :
+                            `<video src="${post.media}" controls class="rounded-lg mb-4 max-h-96 w-full bg-gray-100 dark:bg-gray-700"></video>`
+                        }
+                    ` : ''}
+
+                    <div class="flex items-center gap-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+                        <button onclick="toggleLike('${post.id}')" class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-red-500 transition">
+                            <i class="fa-regular fa-heart text-xl ${post.likedBy?.includes(currentUser?.email) ? 'text-red-500 fa-solid' : ''}"></i>
+                            <span>${post.likes || 0}</span>
+                        </button>
+                        <button onclick="toggleComments('${post.id}')" class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary transition">
+                            <i class="fa-regular fa-comment text-xl"></i>
+                            <span>${post.comments?.length || 0}</span>
+                        </button>
+                    </div>
+
+                    <!-- قسم التعليقات - واضح ومباشر -->
+                    <div id="comments-${post.id}" class="comments-section mt-4">
+                        <!-- قائمة التعليقات -->
+                        <div class="space-y-4 mb-4" id="comments-list-${post.id}">
+                            ${generateCommentsHTML(post.comments || [], post.id)}
+                        </div>
+
+                        <!-- نموذج إضافة تعليق جديد - واضح جداً -->
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mt-4">
+                            <div class="flex gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold">
+                                    ${currentUser?.name?.[0] || '👤'}
+                                </div>
+                                <div class="flex-1">
+                                    <textarea id="comment-input-${post.id}" 
+                                        class="w-full p-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary" 
+                                        placeholder="اكتب تعليقك هنا..."
+                                        rows="2"></textarea>
+                                    <div class="flex justify-end mt-2">
+                                        <button onclick="addComment('${post.id}')" 
+                                            class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 flex items-center gap-2">
+                                            <i class="fa-regular fa-paper-plane"></i>
+                                            <span>نشر التعليق</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // توليد HTML للتعليقات
+        function generateCommentsHTML(comments, postId) {
+            if (!comments || comments.length === 0) {
+                return '<p class="text-gray-500 dark:text-gray-400 text-center py-4">لا توجد تعليقات بعد. كن أول من يعلق!</p>';
+            }
+            
+            return comments.map(comment => `
+                <div class="flex gap-3 group">
+                    <div class="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">
+                        ${comment.userName?.[0] || '👤'}
+                    </div>
+                    <div class="flex-1">
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-semibold text-sm text-gray-800 dark:text-white">${comment.userName}</span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400">${getTimeAgo(comment.date)}</span>
+                            </div>
+                            <p class="text-sm text-gray-700 dark:text-gray-300">${comment.content}</p>
+                            
+                            <!-- زر الرد -->
+                            <button onclick="showReplyInput('${postId}', '${comment.id}')" class="text-xs text-primary hover:underline mt-2 flex items-center gap-1">
+                                <i class="fa-regular fa-reply"></i>
+                                رد
+                            </button>
+
+                            <!-- حقل الرد -->
+                            <div id="reply-${postId}-${comment.id}" class="hidden mt-3">
+                                <div class="flex gap-2">
+                                    <input type="text" 
+                                           id="reply-input-${postId}-${comment.id}"
+                                           class="flex-1 px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800"
+                                           placeholder="اكتب ردك..."
+                                           onkeypress="if(event.key === 'Enter') addReply('${postId}', '${comment.id}')">
+                                    <button onclick="addReply('${postId}', '${comment.id}')" class="bg-primary text-white px-3 py-2 rounded-lg hover:bg-primary/90 text-sm">
+                                        <i class="fa-regular fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- الردود -->
+                            ${comment.replies ? generateRepliesHTML(comment.replies) : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // توليد HTML للردود
+        function generateRepliesHTML(replies) {
+            if (!replies || replies.length === 0) return '';
+            
+            return `
+                <div class="mr-8 mt-3 space-y-3">
+                    ${replies.map(reply => `
+                        <div class="flex gap-2">
+                            <div class="w-6 h-6 bg-gradient-to-br from-primary/70 to-secondary/70 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold">
+                                ${reply.userName?.[0] || '👤'}
+                            </div>
+                            <div class="flex-1 bg-gray-100 dark:bg-gray-600 rounded-lg p-2">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="font-semibold text-xs text-gray-800 dark:text-white">${reply.userName}</span>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">${getTimeAgo(reply.date)}</span>
+                                </div>
+                                <p class="text-sm text-gray-700 dark:text-gray-300">${reply.content}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // دوال المساعدة
+        function getTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            
+            if (seconds < 60) return 'منذ لحظات';
+            if (seconds < 3600) return `منذ ${Math.floor(seconds / 60)} دقيقة`;
+            if (seconds < 86400) return `منذ ${Math.floor(seconds / 3600)} ساعة`;
+            return `منذ ${Math.floor(seconds / 86400)} يوم`;
+        }
+
+        // ===== دوال التسجيل والدخول =====
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                
+                // تحديث واجهة المستخدم
+                document.getElementById('landingPage').style.display = 'none';
+                document.getElementById('dashboard').classList.remove('hidden');
+                document.getElementById('welcomeUserName').textContent = user.name.split(' ')[0];
+                document.getElementById('userNameDisplay').textContent = user.name;
+                document.getElementById('userEmailDisplay').textContent = user.email;
+                document.getElementById('userAvatar').textContent = user.name[0];
+                
+                hideLoginModal();
+                loadHomeContent();
+            } else {
+                alert('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+            }
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPass = document.getElementById('regConfirmPassword').value;
+
+            if (password !== confirmPass) {
+                alert('كلمة المرور غير متطابقة');
+                return;
+            }
+
+            if (users.some(u => u.email === email)) {
+                alert('البريد الإلكتروني موجود مسبقاً');
+                return;
+            }
+
+            const newUser = {
+                id: Date.now().toString(),
+                name,
+                email,
+                password,
+                avatar: null,
+                date: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            alert('تم إنشاء الحساب بنجاح! يمكنك تسجيل الدخول الآن');
+            hideRegisterModal();
+            showLoginModal();
+        }
+
+        function handleLogout() {
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                currentUser = null;
+                localStorage.removeItem('currentUser');
+                document.getElementById('dashboard').classList.add('hidden');
+                document.getElementById('landingPage').style.display = 'block';
+                toggleSettingsMenu(); // إغلاق القائمة
+            }
+        }
+
+        // ===== دوال المنشورات =====
+        function createPost() {
+            const content = document.getElementById('newPostContent').value;
+            if (!content.trim()) {
+                alert('اكتب شيئاً لمشاركته');
+                return;
+            }
+
+            // فلتر الكلمات الممنوعة
+            const bannedWords = ['سكس', 'sex', 'porn', 'نيك', 'كس', 'زب', 'طيز', 'عرص', 'قحبة'];
+            const lowerContent = content.toLowerCase();
+            for (let word of bannedWords) {
+                if (lowerContent.includes(word)) {
+                    alert(`عذراً، كلمة غير مناسبة. الرجاء التعديل`);
+                    return;
+                }
+            }
+
+            const newPost = {
+                id: Date.now().toString(),
+                content: content,
+                userEmail: currentUser.email,
+                userName: currentUser.name,
+                date: new Date().toISOString(),
+                likes: 0,
+                likedBy: [],
+                comments: [],
+                media: document.getElementById('previewImage').src || null,
+                mediaType: document.getElementById('previewImage').src ? 'image' : 
+                           document.getElementById('previewVideo').src ? 'video' : null
+            };
+
+            posts.unshift(newPost);
+            localStorage.setItem('posts', JSON.stringify(posts));
+
+            // تحديث العرض
+            document.getElementById('newPostContent').value = '';
+            clearPostMedia();
+            loadHomeContent();
+        }
+
+        function deletePost(postId) {
+            if (confirm('هل أنت متأكد من حذف هذا المنشور؟')) {
+                posts = posts.filter(p => p.id !== postId);
+                localStorage.setItem('posts', JSON.stringify(posts));
+                loadHomeContent();
+            }
+        }
+
+        function toggleLike(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                if (post.likedBy?.includes(currentUser.email)) {
+                    post.likes--;
+                    post.likedBy = post.likedBy.filter(e => e !== currentUser.email);
+                } else {
+                    post.likes = (post.likes || 0) + 1;
+                    post.likedBy = [...(post.likedBy || []), currentUser.email];
+                }
+                localStorage.setItem('posts', JSON.stringify(posts));
+                loadHomeContent();
+            }
+        }
+
+        function toggleComments(postId) {
+            const commentsDiv = document.getElementById(`comments-${postId}`);
+            commentsDiv.classList.toggle('show');
+        }
+
+        function addComment(postId) {
+            const textarea = document.getElementById(`comment-input-${postId}`);
+            const content = textarea.value.trim();
+            
+            if (!content) {
+                alert('اكتب تعليقك أولاً');
+                return;
+            }
+
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                if (!post.comments) post.comments = [];
+                
+                const newComment = {
+                    id: Date.now().toString(),
+                    content: content,
+                    userEmail: currentUser.email,
+                    userName: currentUser.name,
+                    date: new Date().toISOString(),
+                    replies: []
+                };
+
+                post.comments.push(newComment);
+                localStorage.setItem('posts', JSON.stringify(posts));
+                
+                textarea.value = '';
+                loadHomeContent();
+                
+                // تأكد من ظهور قسم التعليقات
+                document.getElementById(`comments-${postId}`).classList.add('show');
+            }
+        }
+
+        function showReplyInput(postId, commentId) {
+            const replyDiv = document.getElementById(`reply-${postId}-${commentId}`);
+            replyDiv.classList.toggle('hidden');
+            if (!replyDiv.classList.contains('hidden')) {
+                document.getElementById(`reply-input-${postId}-${commentId}`).focus();
+            }
+        }
+
+        function addReply(postId, commentId) {
+            const input = document.getElementById(`reply-input-${postId}-${commentId}`);
+            const content = input.value.trim();
+            
+            if (!content) return;
+
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                const comment = post.comments.find(c => c.id === commentId);
+                if (comment) {
+                    if (!comment.replies) comment.replies = [];
+                    
+                    comment.replies.push({
+                        id: Date.now().toString(),
+                        content: content,
+                        userEmail: currentUser.email,
+                        userName: currentUser.name,
+                        date: new Date().toISOString()
+                    });
+
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                    input.value = '';
+                    document.getElementById(`reply-${postId}-${commentId}`).classList.add('hidden');
+                    loadHomeContent();
+                }
+            }
+        }
+
+        // ===== دوال رفع الملفات =====
+        function triggerImageUpload() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('حجم الصورة كبير جداً. الحد الأقصى 5 ميجابايت');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('previewImage').src = e.target.result;
+                    document.getElementById('previewImage').classList.remove('hidden');
+                    document.getElementById('previewVideo').classList.add('hidden');
+                    document.getElementById('postMediaPreview').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        }
+
+        function triggerVideoUpload() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'video/*';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file.size > 50 * 1024 * 1024) {
+                    alert('حجم الفيديو كبير جداً. الحد الأقصى 50 ميجابايت');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('previewVideo').src = e.target.result;
+                    document.getElementById('previewVideo').classList.remove('hidden');
+                    document.getElementById('previewImage').classList.add('hidden');
+                    document.getElementById('postMediaPreview').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        }
+
+        function clearPostMedia() {
+            document.getElementById('postMediaPreview').classList.add('hidden');
+            document.getElementById('previewImage').src = '';
+            document.getElementById('previewVideo').src = '';
+        }
+
+        function triggerAvatarUpload() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('حجم الصورة كبير جداً. الحد الأقصى 2 ميجابايت');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    // تحديث الصورة في localStorage
+                    if (currentUser) {
+                        currentUser.avatar = e.target.result;
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        
+                        // تحديث المستخدم في قائمة المستخدمين
+                        const userIndex = users.findIndex(u => u.email === currentUser.email);
+                        if (userIndex !== -1) {
+                            users[userIndex].avatar = e.target.result;
+                            localStorage.setItem('users', JSON.stringify(users));
+                        }
+                        
+                        alert('تم تحديث الصورة بنجاح');
+                    }
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        }
+
+        // ===== دوال تحديث الملف الشخصي =====
+        function handleProfileUpdate(event) {
+            event.preventDefault();
+            const newName = document.getElementById('profileName').value;
+            const newEmail = document.getElementById('profileEmail').value;
+            const newPassword = document.getElementById('profileNewPassword').value;
+
+            if (currentUser) {
+                // تحديث البيانات
+                currentUser.name = newName;
+                currentUser.email = newEmail;
+                if (newPassword) {
+                    currentUser.password = newPassword;
+                }
+
+                // تحديث في قائمة المستخدمين
+                const userIndex = users.findIndex(u => u.id === currentUser.id);
+                if (userIndex !== -1) {
+                    users[userIndex] = currentUser;
+                    localStorage.setItem('users', JSON.stringify(users));
+                }
+
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+                // تحديث الواجهة
+                document.getElementById('userNameDisplay').textContent = newName;
+                document.getElementById('userEmailDisplay').textContent = newEmail;
+                document.getElementById('welcomeUserName').textContent = newName.split(' ')[0];
+                document.getElementById('userAvatar').textContent = newName[0];
+                document.getElementById('postAvatar').textContent = newName[0];
+
+                alert('تم تحديث الملف الشخصي بنجاح');
+                hideProfileModal();
+            }
+        }
+
+        // التحقق من وجود مستخدم مسجل دخوله عند تحميل الصفحة
+        window.onload = function() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                document.getElementById('landingPage').style.display = 'none';
+                document.getElementById('dashboard').classList.remove('hidden');
+                document.getElementById('welcomeUserName').textContent = currentUser.name.split(' ')[0];
+                document.getElementById('userNameDisplay').textContent = currentUser.name;
+                document.getElementById('userEmailDisplay').textContent = currentUser.email;
+                document.getElementById('userAvatar').textContent = currentUser.name[0];
+                document.getElementById('postAvatar').textContent = currentUser.name[0];
+                loadHomeContent();
+            }
+
+            // تحميل المستخدمين والمنشورات من localStorage
+            users = JSON.parse(localStorage.getItem('users')) || [];
+            posts = JSON.parse(localStorage.getItem('posts')) || [];
+        }
+    </script>
+</body>
+</html>
